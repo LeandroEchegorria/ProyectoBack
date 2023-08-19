@@ -1,11 +1,11 @@
 [
   {
-    "title": "tomate",
-    "description": "en lata",
-    "price": 950,
+    "title": "arvejas",
+    "description": "verdes",
+    "price": 1000,
     "category": "Enlatados",
-    "code": "ENL078",
-    "stock": 15,
+    "code": "ENL324",
+    "stock": 213,
     "id": 3,
     "status": true
   },

@@ -51,7 +51,6 @@ export class ProductManager {
     async updateProduct (id, { title, description, price, category, thumbnail, code, stock, }) { 
         let products = JSON.parse(await fs.readFile(this.path, 'utf-8')) 
         const indice = products.findIndex (prod => prod.id === parseInt(id)) 
-        console.log(indice)
 
         if (indice!= -1){
             products[indice].title = title 
@@ -71,9 +70,7 @@ export class ProductManager {
 
     async deleteProduct (id) {
         const products = JSON.parse(await fs.readFile(this.path, 'utf-8'))
-        console.log("prods",products)
         const buscado = await products.find(item => item.id === parseInt(id));
-        console.log("buscado",buscado)
             
         if (buscado) {
             const prods= products.filter(prod=> prod.id !== parseInt(id)) 
