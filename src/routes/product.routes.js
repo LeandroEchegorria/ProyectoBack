@@ -1,64 +1,107 @@
-import { Router } from "express";
-import { ProductManager } from "../controllers/productManager.js";
+import { Router } from "express"
+import { ProductManager } from "../controllers/productManager.js"
 
 const productManager = new ProductManager ('src/models/product.json')
 const routerProd = Router()
 
 routerProd.get('/', async(req,res) => {
-    const prods = await productManager.getProducts()
-    const limit = req.query.limit
-    const products = prods.slice(0,limit)
-    res.status(200).json(products)
-})
-
-routerProd.get('/:pid', async (req,res)=> {
-    const pid = parseInt(req.params.pid)
-    const prod = await productManager.getProductsById(parseInt(pid))
-    if (!Number.isInteger(pid)) {
-        res.status(400).send("Invalid product ID");
-        return;
+    try {
+        const prods = await productManager.getProducts()
+        const limit = req.query.limit
+        const products = prods.slice(0, limit)
+        res.status(200).json(products)
+    } catch (error) {
+        console.error('Error:', error)
+        res.status(500).json({ error: 'An error occurred while processing your request.' })
     }
-    (prod) ? res.status(200).json(prod) : res.status(404).send("Product does not exist")
 })
 
-routerProd.post ('/', async (req,res) => {
-    
-    console.log("producto a agregar:", req.body)
-    const confirmacion = await productManager.addProduct(req.body) 
-    
-    
-    (confirmacion) ? res.status(200).send("Product created") : res.status(400).send("Product already exists")
-    
-    
-})
+routerProd.get('/:pid', async (req, res) => {
+    try {
+        const pid = parseInt(req.params.pid)
+        if (!Number.isInteger(pid)) {
+            res.status(400).send("Invalid product ID")
+            return
+        }
+        
+        const prod = await productManager.getProductsById(pid)
+        if (prod) {
+            res.status(200).json(prod)
+        } else {
+            res.status(404).send("Product does not exist")
+        }
+        
 
-routerProd.put('/:pid', async (req,res) => {
-    console.log("producto a modificar:", req.body)
-    const pid = parseInt(req.params.pid)
-    if (!Number.isInteger(pid)) {
-        res.status(400).send("Invalid product ID");
-        return;
+    } catch (error) {
+        console.error('Error:', error)
+        res.status(500).json({ error: 'An error occurred while processing your request.' })
     }
-    
-    const confirmacion = await productManager.updateProduct(pid, req.body)
-    
-    (confirmacion) ? res.status(200).send("Product updated") : res.status(404).send("Product not found")
-    
 })
 
-routerProd.delete('/:pid', async (req,res)=> {
-    const pid = parseInt(req.params.pid)
-    console.log("pid", pid)
-    if (!Number.isInteger(pid)) {
-        res.status(400).send("Invalid product ID");
-        return;
+routerProd.post('/', async (req, res) => {
+    try {
+        console.log("Producto a agregar:", req.body)
+        const confirmacion = await productManager.addProduct(req.body)
+        if (confirmacion) {
+            res.status(200).send("Product created")
+        } else {
+            res.status(404).send("Product already exists")
+        }
+    
+    } catch (error) {
+        console.error('Error:', error)
+        res.status(500).json({ error: 'An error occurred while processing your request.' })
     }
+});
 
-    const confirmacion = await productManager.deleteProduct(pid)
+
+routerProd.put('/:pid', async (req, res) => {
+    try {
+        console.log("Producto a modificar:", req.body)
+        const pid = parseInt(req.params.pid)
+        
+        if (!Number.isInteger(pid)) {
+            res.status(400).send("Invalid product ID")
+            return;
+        }
+        const confirmacion = await productManager.updateProduct(pid, req.body)
+
+        if (confirmacion) {
+            res.status(200).send("Product updated")
+        } else {
+            res.status(404).send("Product not found")
+        }
+
+        
+
+    } catch (error) {
+        console.error('Error:', error)
+        res.status(500).json({ error: 'An error occurred while processing your request.' })
+    }
+});
+
+
+routerProd.delete('/:pid', async (req, res) => {
+    try {
+        const pid = parseInt(req.params.pid)
+        console.log("pid", pid)
+
+        if (!Number.isInteger(pid)) {
+            res.status(400).send("Invalid product ID")
+            return
+        }
+        const confirmacion = await productManager.deleteProduct(pid)
+        if (confirmacion) {
+            res.status(200).send("Product deleted")
+        } else {
+            res.status(404).send("Product not found")
+        }
     
-    (confirmacion) ? res.status(200).send("Product deleted") : res.status(404).send("Product not found")
-    
-})
+    } catch (error) {
+        console.error('Error:', error)
+        res.status(500).json({ error: 'An error occurred while processing your request.' })
+    }
+});
 
 export default routerProd
 
