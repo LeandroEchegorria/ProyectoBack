@@ -1,0 +1,26 @@
+Buenas Leandro te comento mientras te corrijo la entrega:
+
+
+
+Si o si tenemos que implementar métodos que controlen los errores en las rutas, usemos mas el try-catch y el IF. Tenemos que asegurarnos que si la ruta nos pide un parámetro, controlar que el usuario nos envió ese mismo, también verificar si es correcto, etc. Siempre tenemos que hacer el mayor chequeo posible para que no nos rompan nuestras rutas
+Cuando en la ruta, sale todo bien y es un status 200, y tenemos que devolver algo, es mejor usar el JSON y no el send, ya que el send es un mensaje y el JSON, nos sirve para manejar los datos en lenguaje JS, mas que nada desde el lado del front-end. Podríamos devolver algo así: "res.status(200).json(products);"
+Bien usado el asincronismo (async-await)
+En routerProd.delete, estamos usando un setTimeOut innecesario, podríamos remplazarlo por:
+ if (confirmación) {
+
+  res.status(200).json({ message: "Producto eliminado correctamente" });
+
+ } else {
+
+  res.status(404).json({ message: "Producto no encontrado" });
+
+ }
+
+
+
+En cart.routes.js igual, verifiquemos que el parámetro existe, que sea correcto y que es valido antes de enviar la información. También siempre tratemos de que cuando haya un error, de dar una respuesta especifica de lo que falló. Asi el front-end, sabrá que mensaje devolverle al usuario cuando algo falla
+También veo otro setTimeOut innecesario en routerCart.post.
+Fíjate que agregaste una ruta "routerCart.delete" y routerCart.get('/') lo cual la consigna no solicita esas rutas. 
+
+
+Mas allá de las correcciones vas bien. Tenemos que tener en cuenta estos puntos para las próximas entregas, ya que se nota que tenes conocimientos solo falta pulir algunos detalles y controlar los errores que puedan ocurrir. Trata de resolverlos, proba cada ruta haciendo una petición vacía, un id invalido, un id valido, etc. Más que nada para que el usuario en algún punto pueda romper nuestra pagina y funcione correctamente. Vamos bien Leandro! a seguir.

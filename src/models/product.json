@@ -1,0 +1,22 @@
+[
+  {
+    "title": "atun grande",
+    "description": "atun desmenuzado",
+    "price": 450,
+    "category": "Enlatados",
+    "code": "ENL958",
+    "stock": 145,
+    "id": 2,
+    "status": true
+  },
+  {
+    "title": "tomate",
+    "description": "en lata",
+    "price": 950,
+    "category": "Enlatados",
+    "code": "ENL078",
+    "stock": 15,
+    "id": 3,
+    "status": true
+  }
+]
