@@ -4,9 +4,17 @@ import routerCart from './routes/cart.routes.js';
 import { __dirname } from './path.js'
 import path from 'path';
 import { engine } from 'express-handlebars';
+import { Server } from 'socket.io'
+import { ProductManager } from './controllers/productManager.js';
 
 const app = express()
 const PORT = 8080
+
+//Server
+const server = app.listen(PORT, ()=> {
+  console.log(`Server on port ${PORT}, http://localhost:${PORT}/`)
+})
+const io = new Server(server)
 
 //middlewares
 app.use(express.json())
@@ -21,30 +29,45 @@ app.use('/static', express.static(path.join(__dirname, '/public')))
 app.use('/api/product', routerProd)
 app.use('/api/carts', routerCart)
 app.get('/', (req,res)=> {
-  res.send("Bienvenido a la Pre-entrega 1")
+  res.send("Bienvenido")
 })
 //HBS
 app.get('/static', (req,res) => {
-  const user = {
-    nombre: "Leandro",
-    cargo : "tutor"
-  }
-  const cursos = [
-    {numCurso: "124", dia: "LyM", horario: "Noche"},
-    {numCurso: "787", dia: "MyJ", horario: "Tarde"},
-    {numCurso: "471", dia: "S", horario: "Mañana"}
-  ]
-  res.render('users', {
-    titulo : "Users",
-    usuario: user,
-    rutaCSS : "users.css",
-    isTutor : user.cargo == "tutor",
-    cursos : cursos
+  res.render('realTimeProducts', {
+    titulo: "Real Time Products",
+    rutaCSS : "realTimeProducts",
+    rutaJS: "realTimeProducts",
+
   })
 })
 
-//Server
-app.listen(PORT, ()=> {
-    console.log(`Server on port ${PORT}, http://localhost:${PORT}/`)
+//Product Manager
+const ProductManagerSocket = new ProductManager('./src/models/product.json')
+
+//Conexion de Socket.io
+io.on("connection", (socket) => {
+  console.log("Conexion con Socket.io")
+
+  socket.on('mensaje', info => {
+      console.log(info)
+      socket.emit('respuesta', false)
+  })
+
+  socket.on('juego', (infoJuego) => {
+      if (infoJuego == "poker")
+          console.log("Conexion a Poker")
+      else
+          console.log("Conexion a Truco")
+  })
+
+  socket.on('nuevoProducto', (prod) => {
+      console.log(prod)
+      //Deberia agregarse al txt o json mediante addProduct
+      ProductManagerSocket.addProduct(prod)
+
+      socket.emit("mensajeProductoCreado", "El producto se creo correctamente")
+  })
 })
+
+
 
