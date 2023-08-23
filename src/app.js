@@ -16,6 +16,9 @@ const server = app.listen(PORT, ()=> {
 })
 const io = new Server(server)
 
+//Product Manager
+const ProductManagerSocket = new ProductManager('./src/models/product.json')
+
 //middlewares
 app.use(express.json())
 app.use(express.urlencoded ({extended: true}))
@@ -32,7 +35,21 @@ app.get('/', (req,res)=> {
   res.send("Bienvenido")
 })
 //HBS
-app.get('/static', (req,res) => {
+app.get('/static', async (req,res) => {
+
+  const prods = await ProductManagerSocket.getProducts()
+
+  res.render('home', { 
+    //se mostraran los productos utilizando HBS
+    titulo: "Products",
+    rutaCSS : "home",
+    rutaJS: "home",
+    productos: prods 
+
+  })
+})
+
+app.get('/static/realTimeProducts', (req,res) => {
   res.render('realTimeProducts', {
     titulo: "Real Time Products",
     rutaCSS : "realTimeProducts",
@@ -41,33 +58,21 @@ app.get('/static', (req,res) => {
   })
 })
 
-//Product Manager
-const ProductManagerSocket = new ProductManager('./src/models/product.json')
+
 
 //Conexion de Socket.io
 io.on("connection", (socket) => {
   console.log("Conexion con Socket.io")
 
-  socket.on('mensaje', info => {
-      console.log(info)
-      socket.emit('respuesta', false)
-  })
-
-  socket.on('juego', (infoJuego) => {
-      if (infoJuego == "poker")
-          console.log("Conexion a Poker")
-      else
-          console.log("Conexion a Truco")
-  })
-
   socket.on('nuevoProducto', (prod) => {
       console.log(prod)
-      //Deberia agregarse al txt o json mediante addProduct
       ProductManagerSocket.addProduct(prod)
 
       socket.emit("mensajeProductoCreado", "El producto se creo correctamente")
   })
+  socket.on('productos', async() => {
+    const prods = await ProductManagerSocket.getProducts()
+    socket.emit('getProducts', prods)
+  })
+
 })
-
-
-

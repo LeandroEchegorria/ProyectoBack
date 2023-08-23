@@ -28,5 +28,15 @@
     "code": "ENL931",
     "status": true,
     "id": 5
+  },
+  {
+    "title": "Manteca",
+    "description": "100g",
+    "category": "Lacteos",
+    "price": "2330",
+    "stock": "13",
+    "code": "LAC901",
+    "status": true,
+    "id": 6
   }
 ]
