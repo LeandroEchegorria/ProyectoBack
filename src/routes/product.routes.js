@@ -1,12 +1,13 @@
 import { Router } from "express"
-import { ProductManager } from "../controllers/productManager.js"
+/* import { ProductManager } from "../controllers/productManager.js" */
+import { productModel } from "../models/products.model.js"
 
-const productManager = new ProductManager ('src/models/product.json')
+/* const productManager = new ProductManager ('src/models/product.json') */
 const routerProd = Router()
 
 routerProd.get('/', async(req,res) => {
     try {
-        const prods = await productManager.getProducts()
+        const prods = await productModel.find()
         const limit = req.query.limit
         const products = prods.slice(0, limit)
         res.status(200).json(products)
@@ -24,7 +25,7 @@ routerProd.get('/:pid', async (req, res) => {
             return
         }
         
-        const prod = await productManager.getProductsById(pid)
+        const prod = await productModel.getProductsById(pid)
         if (prod) {
             res.status(200).json(prod)
         } else {
@@ -41,7 +42,11 @@ routerProd.get('/:pid', async (req, res) => {
 routerProd.post('/', async (req, res) => {
     try {
         console.log("Producto a agregar:", req.body)
-        const confirmacion = await productManager.addProduct(req.body)
+        const { nombre, apellido, edad, password, email } = req.body
+        const confirmacion = await productModel.create({
+            nombre, apellido, edad, password, email
+            
+        })
         if (confirmacion) {
             res.status(200).send("Product created")
         } else {
@@ -64,7 +69,7 @@ routerProd.put('/:pid', async (req, res) => {
             res.status(400).send("Invalid product ID")
             return;
         }
-        const confirmacion = await productManager.updateProduct(pid, req.body)
+        const confirmacion = await productModel.updateProduct(pid, req.body)
 
         if (confirmacion) {
             res.status(200).send("Product updated")
@@ -90,7 +95,7 @@ routerProd.delete('/:pid', async (req, res) => {
             res.status(400).send("Invalid product ID")
             return
         }
-        const confirmacion = await productManager.deleteProduct(pid)
+        const confirmacion = await productModel.deleteProduct(pid)
         if (confirmacion) {
             res.status(200).send("Product deleted")
         } else {

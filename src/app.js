@@ -6,9 +6,16 @@ import path from 'path';
 import { engine } from 'express-handlebars';
 import { Server } from 'socket.io'
 import { ProductManager } from './controllers/productManager.js';
+import mongoose from 'mongoose';
+
 
 const app = express()
 const PORT = 8080
+const mongoURL = 'mongodb+srv://leandroechegorria:Leandro87@leandro.qvdfttf.mongodb.net/'
+
+mongoose.connect(mongoURL)
+  .then(() => console.log("DB conectada"))
+  .catch((error) => console.log("Error en conexion a MongoDB Atlas: ", error))
 
 //Server
 const server = app.listen(PORT, ()=> {

@@ -38,5 +38,15 @@
     "code": "LAC901",
     "status": true,
     "id": 6
+  },
+  {
+    "title": "lele",
+    "description": "lea",
+    "category": "le",
+    "price": "1000",
+    "stock": "5",
+    "code": "LEA001",
+    "status": true,
+    "id": 7
   }
 ]
